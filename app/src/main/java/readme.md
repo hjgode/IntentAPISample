@@ -2,5 +2,5 @@
 
 This code does not need either "Scan to Intent" nor a "Data Intent" setup.
 
-image intent_setups.png
+![No Intent setup](https://github.com/hjgode/IntentAPISample/raw/master/app/src/main/java/intent_setups.png)
 

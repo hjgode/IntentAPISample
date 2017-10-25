@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     Button button;
 
+
+
     private BroadcastReceiver barcodeDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -110,6 +112,7 @@ These extras are available:
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView);
         button = (Button)findViewById(R.id.button);
+        button.setText("Start Scan");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
