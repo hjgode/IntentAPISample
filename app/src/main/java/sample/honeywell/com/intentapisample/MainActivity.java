@@ -143,6 +143,10 @@ These extras are available:
         Bundle properties = new Bundle();
         properties.putBoolean("DPR_DATA_INTENT", true);
         properties.putString("DPR_DATA_INTENT_ACTION", ACTION_BARCODE_DATA);
+
+        properties.putInt("TRIG_AUTO_MODE_TIMEOUT", 2);
+        properties.putString("TRIG_SCAN_MODE", "readOnRelease");
+
         sendBroadcast(new Intent(ACTION_CLAIM_SCANNER)
                 .putExtra(EXTRA_SCANNER, "dcs.scanner.imager")
                 .putExtra(EXTRA_PROFILE, "DEFAULT")// "MyProfile1")
