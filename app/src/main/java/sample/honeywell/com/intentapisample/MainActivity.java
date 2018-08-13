@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
@@ -119,6 +120,15 @@ These extras are available:
                 sendBroadcast(new Intent(EXTRA_CONTROL)
                     .putExtra(EXTRA_SCAN, true)
                 );
+                //software defined decode timeout!
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        sendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, false));
+                    }
+                }, 3000);
             }
         });
         Log.d("IntentApiSample: ", "onCreate");
@@ -145,7 +155,7 @@ These extras are available:
         properties.putString("DPR_DATA_INTENT_ACTION", ACTION_BARCODE_DATA);
 
         properties.putInt("TRIG_AUTO_MODE_TIMEOUT", 2);
-        properties.putString("TRIG_SCAN_MODE", "readOnRelease");
+        properties.putString("TRIG_SCAN_MODE", "readOnRelease"); //This works for Hardware Trigger only! If scan is started from code, the code is responsible for a switching off the scanner before a decode
 
         sendBroadcast(new Intent(ACTION_CLAIM_SCANNER)
                 .putExtra(EXTRA_SCANNER, "dcs.scanner.imager")
