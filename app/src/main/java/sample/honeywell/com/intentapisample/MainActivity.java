@@ -1,9 +1,12 @@
 package sample.honeywell.com.intentapisample;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "IntentApiSample";
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
     Button button;
-
+    int sdkVersion=0;
 
 
     private BroadcastReceiver barcodeDataReceiver = new BroadcastReceiver() {
@@ -107,6 +112,32 @@ These extras are available:
             }
         }
     };
+
+    private static void sendImplicitBroadcast(Context ctxt, Intent i) {
+        PackageManager pm=ctxt.getPackageManager();
+        List<ResolveInfo> matches=pm.queryBroadcastReceivers(i, 0);
+
+        for (ResolveInfo resolveInfo : matches) {
+            Intent explicit=new Intent(i);
+            ComponentName cn=
+                    new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
+                            resolveInfo.activityInfo.name);
+
+            explicit.setComponent(cn);
+            ctxt.sendBroadcast(explicit);
+        }
+    }
+
+    private  void mysendBroadcast(Intent intent){
+        if(sdkVersion<26) {
+            sendBroadcast(intent);
+        }else {
+            //for Android O above "gives W/BroadcastQueue: Background execution not allowed: receiving Intent"
+            //either set targetSDKversion to 25 or use implicit broadcast
+            sendImplicitBroadcast(getApplicationContext(), intent);
+        }
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,19 +145,20 @@ These extras are available:
         textView = (TextView) findViewById(R.id.textView);
         button = (Button)findViewById(R.id.button);
         button.setText("Start Scan");
+        sdkVersion = android.os.Build.VERSION.SDK_INT;
+        Log.d(TAG, "running on sdk version: "+sdkVersion);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendBroadcast(new Intent(EXTRA_CONTROL)
-                    .putExtra(EXTRA_SCAN, true)
-                );
+
+                    mysendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, true));
                 //software defined decode timeout!
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run()
                     {
-                        sendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, false));
+                            mysendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, false));
                     }
                 }, 3000);
             }
@@ -157,7 +189,7 @@ These extras are available:
         properties.putInt("TRIG_AUTO_MODE_TIMEOUT", 2);
         properties.putString("TRIG_SCAN_MODE", "readOnRelease"); //This works for Hardware Trigger only! If scan is started from code, the code is responsible for a switching off the scanner before a decode
 
-        sendBroadcast(new Intent(ACTION_CLAIM_SCANNER)
+        mysendBroadcast(new Intent(ACTION_CLAIM_SCANNER)
                 .putExtra(EXTRA_SCANNER, "dcs.scanner.imager")
                 .putExtra(EXTRA_PROFILE, "DEFAULT")// "MyProfile1")
                 .putExtra(EXTRA_PROPERTIES, properties)
@@ -165,7 +197,7 @@ These extras are available:
     }
     private void releaseScanner() {
         Log.d("IntentApiSample: ", "releaseScanner");
-        sendBroadcast(new Intent(ACTION_RELEASE_SCANNER));
+        mysendBroadcast(new Intent(ACTION_RELEASE_SCANNER));
     }
     private void setText(final String text) {
         if (textView != null) {
