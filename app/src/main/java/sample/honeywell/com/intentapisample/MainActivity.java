@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -145,8 +146,22 @@ These extras are available:
         textView = (TextView) findViewById(R.id.textView);
         button = (Button)findViewById(R.id.button);
         button.setText("Start Scan");
+
         sdkVersion = android.os.Build.VERSION.SDK_INT;
-        Log.d(TAG, "running on sdk version: "+sdkVersion);
+        Log.d(TAG, "sdkVersion=" + sdkVersion+"\n");
+
+        //JUST some code showing how to get Build version etc.
+        //Log.i(TAG, SystemPropertyAccess.getCommonESversion(getApplicationContext()));
+        StringBuilder sV=new StringBuilder().append("\n================================================\nService Pack: "+SystemPropertyAccess.getServicePack()+"\n");
+        sV.append(sV);
+        sV.append("HSMVersionInfo: \n"+ SystemPropertyAccess.getHSMVersionInfo()+"\n");
+
+        sV.append("Build Number: " + android.os.Build.DISPLAY+"\n");
+        sV.append("\nPkgInfo: \n"+SystemPropertyAccess.getPkgInfo(getApplicationContext())+"\n");
+
+        sV.append ("\n================================================\n");
+        Log.i(TAG, "\n" + sV.toString());
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
