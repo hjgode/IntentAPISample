@@ -162,6 +162,9 @@ These extras are available:
         sV.append ("\n================================================\n");
         Log.i(TAG, "\n" + sV.toString());
 
+        Log.i(TAG, "SerialNumber: "+SystemPropertyAccess.getSerialNumber());
+        Log.i(TAG, "SerialNumber2: "+SystemPropertyAccess.getSerialNumber2());
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

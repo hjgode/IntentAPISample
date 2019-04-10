@@ -101,6 +101,30 @@ public final class SystemPropertyAccess {
         }
         return s;
     }
+
+    public static String getSerialNumber(){
+
+        try {
+            Class SystemProperties = Class.forName("android.os.SystemProperties");
+            String name="ro.hsm.extserial.num";
+            String defaultValue=null;
+            String result = (String) SystemProperties.getMethod("get", new Class[]{String.class, String.class}).invoke(SystemProperties, new Object[]{name, defaultValue});
+            if (result.equals("")) {
+                return "Not Supported";
+            }
+            return result;
+        } catch (Exception e) {
+            Log.wtf(TAG, "Failed to get system property", e);
+            return null;
+        }
+
+
+    }
+
+    public static String getSerialNumber2(){
+        return Build.SERIAL;
+    }
+
     public static String getPkgInfo(Context context) {
         StringBuffer result = new StringBuffer();
         StringBuffer demosInfo = new StringBuffer().append("demosInfo\n");
