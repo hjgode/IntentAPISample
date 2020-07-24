@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "IntentApiSample";
-    private static final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.BARCODE_DATA";
+    private static final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.MY_BARCODE_DATA";
     /**
      * Honeywell DataCollection Intent API
      * Claim scanner
@@ -115,17 +115,22 @@ These extras are available:
     };
 
     private static void sendImplicitBroadcast(Context ctxt, Intent i) {
-        PackageManager pm=ctxt.getPackageManager();
-        List<ResolveInfo> matches=pm.queryBroadcastReceivers(i, 0);
+        PackageManager pm = ctxt.getPackageManager();
+        List<ResolveInfo> matches = pm.queryBroadcastReceivers(i, 0);
+        if (matches.size() > 0) {
+            for (ResolveInfo resolveInfo : matches) {
+                Intent explicit = new Intent(i);
+                ComponentName cn =
+                        new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
+                                resolveInfo.activityInfo.name);
 
-        for (ResolveInfo resolveInfo : matches) {
-            Intent explicit=new Intent(i);
-            ComponentName cn=
-                    new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
-                            resolveInfo.activityInfo.name);
+                explicit.setComponent(cn);
+                ctxt.sendBroadcast(explicit);
+            }
 
-            explicit.setComponent(cn);
-            ctxt.sendBroadcast(explicit);
+        } else{
+            // to be compatible with Android 9 and later version for dynamic receiver
+            ctxt.sendBroadcast(i);
         }
     }
 
@@ -168,7 +173,7 @@ These extras are available:
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                    Log.d(TAG, "light scanner");
                     mysendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, true));
                 //software defined decode timeout!
                 final Handler handler = new Handler();
@@ -176,7 +181,8 @@ These extras are available:
                     @Override
                     public void run()
                     {
-                            mysendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, false));
+                        mysendBroadcast(new Intent(EXTRA_CONTROL).putExtra(EXTRA_SCAN, false));
+                        Log.d(TAG, "stop scanner");
                     }
                 }, 3000);
             }

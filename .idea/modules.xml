@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IntentAPISample.iml" filepath="$PROJECT_DIR$/IntentAPISample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/IntentAPISample-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/IntentAPISample-app.iml" group="IntentAPISample/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/git-IntentAPISample.iml" filepath="$PROJECT_DIR$/.idea/modules/git-IntentAPISample.iml" group="IntentAPISample" />
     </modules>
   </component>
 </project>
