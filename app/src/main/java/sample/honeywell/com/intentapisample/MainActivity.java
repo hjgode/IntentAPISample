@@ -22,6 +22,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "IntentApiSample";
     private static final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.MY_BARCODE_DATA";
+    //TODO: DO NOT USE THE sample string "com.honeywell.sample.action.BARCODE_DATA"
+    //private static final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.BARCODE_DATA";
+
     /**
      * Honeywell DataCollection Intent API
      * Claim scanner
@@ -193,7 +196,11 @@ These extras are available:
     protected void onResume() {
         super.onResume();
 //        IntentFilter intentFilter = new IntentFilter("hsm.RECVRBI");
-        registerReceiver(barcodeDataReceiver, new IntentFilter(ACTION_BARCODE_DATA));
+        IntentFilter intent=new IntentFilter();
+        intent.addAction(ACTION_BARCODE_DATA);
+        //TODO: Honeywell needs the Category "android.intent.category.DEFAULT"
+        intent.addCategory("android.intent.category.DEFAULT");
+        registerReceiver(barcodeDataReceiver, intent);
         claimScanner();
         Log.d("IntentApiSample: ", "onResume");
     }
